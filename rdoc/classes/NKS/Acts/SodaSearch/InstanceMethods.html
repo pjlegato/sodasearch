@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: NKS::Acts::SodaSearch::InstanceMethods</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">NKS::Acts::SodaSearch::InstanceMethods</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../../files/lib/acts_as_soda_search_rb.html">
+                lib/acts_as_soda_search.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000014">autoindex</a>&nbsp;&nbsp;
+      <a href="#M000020">debug</a>&nbsp;&nbsp;
+      <a href="#M000017">erase_subsource</a>&nbsp;&nbsp;
+      <a href="#M000021">error</a>&nbsp;&nbsp;
+      <a href="#M000015">index</a>&nbsp;&nbsp;
+      <a href="#M000016">indexes_count</a>&nbsp;&nbsp;
+      <a href="#M000018">info</a>&nbsp;&nbsp;
+      <a href="#M000019">warn</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
+
+        <div class="method-heading">
+          <a href="#M000014" class="method-signature">
+          <span class="method-name">autoindex</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Abstract method. Implement this in your inheriting class to provide the
+index() method with whatever it needs to know to re-index the object.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000014-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 252</span>
+252:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">autoindex</span>
+253:           <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;* SodaSearch: You must implement autoindex() in your inheriting class.&quot;</span>)
+254:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
+
+        <div class="method-heading">
+          <a href="#M000017" class="method-signature">
+          <span class="method-name">erase_subsource</span><span class="method-args">(subsource_url)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+This removes all index data for the current object with subsource =
+subsource_url.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000017-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 487</span>
+487:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">erase_subsource</span>(<span class="ruby-identifier">subsource_url</span>)
+488:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">delete_all</span>([<span class="ruby-node">&quot;indexee_id = '#{self.id}' AND subsource_url = ?&quot;</span>, <span class="ruby-identifier">subsource_url</span>])
+489:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
+
+        <div class="method-heading">
+          <a href="#M000015" class="method-signature">
+          <span class="method-name">index</span><span class="method-args">(what_to_index, subsource_url = nil, clear_old = false, do_stemming = true)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Causes the instance to index something and add it to the database, defined
+by what_to_index.
+</p>
+<p>
+Use with clear_old = false to add new data to an existing index. There is
+no need to re-index an entire huge object just because a paragraph of text
+is postpended to the end entire object (which would take a while); just
+call index with the new data in what_to_index.
+</p>
+<p>
+Use with clear_old = true to purge all references to the self object in the
+indices, and then add the stuff in what_to_index to the database.
+</p>
+<p>
+***** CAUTION: Use clear_old = true only when the site is running in
+single-user mode, to avoid race conditions.
+</p>
+<pre>
+      TODO: look into row locking
+</pre>
+<p>
+What_to_index is an array of strings and/or procs that return either
+strings or other procs. The code as it stands can eval 2 levels of nested
+procs. Someday we&#8217;ll make it recursive and Lispy so you can have
+infinitely nested procs. That&#8216;d be Cool (tm).
+</p>
+<p>
+We use procs sometimes instead of actual text because the actual text can
+be huge when aggregated. With the procs, we can only pull the text of one
+segment into memory at any given time.
+</p>
+<p>
+Downcases and stems the terms if do_stemming = true (the default scenario).
+</p>
+<ul>
+<li>See doc/Indexer-Readme.txt for an explanation of subsource_url.
+
+</li>
+</ul>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000015-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000015-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 288</span>
+288:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">index</span>(<span class="ruby-identifier">what_to_index</span>, <span class="ruby-identifier">subsource_url</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">clear_old</span> = <span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">do_stemming</span> = <span class="ruby-keyword kw">true</span>)
+289:           <span class="ruby-identifier">info</span>(<span class="ruby-node">&quot;#{clear_old ? 're' : ''}indexing #{self.id}...&quot;</span>)
+290:           <span class="ruby-identifier">warn</span>(<span class="ruby-value str">&quot;** clear_old is set to TRUE. Don't do this in multiuser mode, to avoid race conditions.&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">clear_old</span>
+291: 
+292:           <span class="ruby-identifier">start_time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">to_f</span>
+293: 
+294:           <span class="ruby-identifier">position</span> = <span class="ruby-value">0</span>
+295: 
+296:           <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">transaction</span> {
+297:             <span class="ruby-comment cmt"># first, delete any old references to this object in the index table, if we are told to</span>
+298:             <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">delete_all</span>(<span class="ruby-node">&quot;indexee_id = '#{id}'&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">clear_old</span>
+299:           
+300:             <span class="ruby-comment cmt">#</span>
+301:             <span class="ruby-comment cmt"># make arrays to hold the terms and ids we find if doing a fast (bulk) add.</span>
+302:             <span class="ruby-comment cmt"># (See comments above on SLOW_ADD. These are only actually used when SLOW_ADD = false.)</span>
+303:             <span class="ruby-comment cmt"># Hash is no good because order is important.</span>
+304:             <span class="ruby-comment cmt">#</span>
+305:             <span class="ruby-comment cmt"># term_ids entries are normally string UUIDs. They may</span>
+306:             <span class="ruby-comment cmt"># also be :nonexistent where there is no entry currently</span>
+307:             <span class="ruby-comment cmt"># in the database for that term, or they may be :unknown</span>
+308:             <span class="ruby-comment cmt"># to indicate that we haven't yet checked to see whether</span>
+309:             <span class="ruby-comment cmt"># that term exists.</span>
+310:             <span class="ruby-comment cmt">#</span>
+311:             <span class="ruby-comment cmt"># nonexistent_term_ids and unknown_term_ids are Arrays</span>
+312:             <span class="ruby-comment cmt"># of int indices into term_ids that point to</span>
+313:             <span class="ruby-comment cmt"># :nonexistent and :unknown entries. These are used for</span>
+314:             <span class="ruby-comment cmt"># performance reasons, to avoid having to re-scan the</span>
+315:             <span class="ruby-comment cmt"># entire (long) term_ids array to find them.</span>
+316:             <span class="ruby-comment cmt">#</span>
+317:             <span class="ruby-comment cmt"># These get processed once per what_to_index item right now, to not eat up huge</span>
+318:             <span class="ruby-comment cmt"># amounts of memory and still acheive a reasonable throughput by minimizing DB hits.</span>
+319:             <span class="ruby-comment cmt">#</span>
+320:             <span class="ruby-identifier">terms</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+321:             <span class="ruby-identifier">term_ids</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+322:             <span class="ruby-identifier">nonexistent_term_ids</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+323: 
+324:             <span class="ruby-identifier">what_to_index</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+325:               <span class="ruby-comment cmt">#debug &quot;item is #{item.inspect}, self is #{self.inspect}&quot;</span>
+326: 
+327: 
+328:               <span class="ruby-comment cmt">#</span>
+329:               <span class="ruby-comment cmt"># queue is the list of stuff to process within the current what_to_index item.</span>
+330:               <span class="ruby-comment cmt"># Each what_to_index item may have any number of strings or procs.</span>
+331:               <span class="ruby-comment cmt">#</span>
+332:               <span class="ruby-comment cmt"># if it's a string, use that.</span>
+333:               <span class="ruby-comment cmt"># if it's a lambda, call it and use that.</span>
+334:               <span class="ruby-comment cmt">#</span>
+335:               <span class="ruby-identifier">queue</span> = <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">item</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+336:                         [ <span class="ruby-identifier">item</span> ]
+337:                       <span class="ruby-keyword kw">else</span>
+338:                         <span class="ruby-identifier">item</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword kw">self</span>)
+339:                       <span class="ruby-keyword kw">end</span>
+340:               
+341:               <span class="ruby-comment cmt">#</span>
+342:               <span class="ruby-comment cmt"># Now we have an array of strings and procs. Scan and</span>
+343:               <span class="ruby-comment cmt"># add to index, calling proc if necessary to get a</span>
+344:               <span class="ruby-comment cmt"># string.</span>
+345:               <span class="ruby-comment cmt">#</span>
+346: 
+347:               <span class="ruby-comment cmt">#debug &quot;queue is #{queue.inspect}&quot;</span>
+348: 
+349:               <span class="ruby-identifier">queue</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span>
+350:                 <span class="ruby-identifier">scanner</span> = <span class="ruby-constant">StringScanner</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">x</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">call</span>())
+351:                 <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">scanner</span>.<span class="ruby-identifier">eos?</span>
+352:                   
+353:                   <span class="ruby-comment cmt"># find next word</span>
+354:                   <span class="ruby-identifier">word</span> = <span class="ruby-identifier">scanner</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/[0-9a-zA-Z']+/</span>)
+355:                   
+356:                   <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">word</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span>  <span class="ruby-identifier">word</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">MINIMUM_WORD_LENGTH</span> <span class="ruby-operator">||</span> <span class="ruby-constant">STOPWORDS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">word</span>)
+357:                     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">do_stemming</span>
+358:                       <span class="ruby-identifier">word</span>.<span class="ruby-identifier">downcase!</span>
+359:                       <span class="ruby-identifier">word</span> = <span class="ruby-identifier">word</span>.<span class="ruby-identifier">stem</span>
+360:                     <span class="ruby-keyword kw">end</span>
+361: 
+362:                     <span class="ruby-comment cmt">### add word to the index.</span>
+363:                     
+364:                     <span class="ruby-keyword kw">if</span> <span class="ruby-constant">SLOW_ADD</span> <span class="ruby-comment cmt"># (see comments above for SLOW_ADD)</span>
+365:                       <span class="ruby-comment cmt">#</span>
+366:                       <span class="ruby-comment cmt"># slow, inefficient way. Requires 2 DB hits for each item, 1 to see if it's already a term, and 1 to</span>
+367:                       <span class="ruby-comment cmt"># add the index.</span>
+368:                       <span class="ruby-comment cmt"># This does just under 200 terms per second on my MacBook with autocommit off, so it takes a while to index large datasets.</span>
+369:                       <span class="ruby-comment cmt">#</span>
+370: 
+371:                       <span class="ruby-comment cmt"># see if the term is in the db already</span>
+372:                       <span class="ruby-identifier">term</span> = (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_terms_class</span>.<span class="ruby-identifier">find_by_term</span>(<span class="ruby-identifier">word</span>) <span class="ruby-operator">||</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_terms_class</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">:term</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">word</span>))
+373:                       <span class="ruby-identifier">term_id</span> = <span class="ruby-identifier">term</span>.<span class="ruby-identifier">id</span>
+374:                       
+375:                       <span class="ruby-comment cmt"># add to index</span>
+376:                       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">:term_id</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">term_id</span>,
+377:                                                            <span class="ruby-identifier">:position</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">position</span>,
+378:                                                            <span class="ruby-identifier">:user_id</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">user_id</span>,
+379:                                                            <span class="ruby-identifier">:indexee_id</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">id</span>,
+380:                                                            <span class="ruby-identifier">:subsource_url</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">subsource_url</span>)
+381:                     <span class="ruby-keyword kw">else</span> 
+382:                       <span class="ruby-identifier">terms</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">word</span>)
+383:                       <span class="ruby-identifier">term_ids</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">:unknown</span>)
+384:                     <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># if SLOW_ADD</span>
+385:                     
+386:                     <span class="ruby-identifier">position</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+387: 
+388:                   <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># while</span>
+389:                   
+390:                   <span class="ruby-comment cmt"># skip to next word</span>
+391:                   <span class="ruby-identifier">word</span> = <span class="ruby-identifier">scanner</span>.<span class="ruby-identifier">skip</span>(<span class="ruby-regexp re">/[^0-9a-zA-Z']+/</span>)      
+392:                 <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># while</span>
+393:                 
+394:               } <span class="ruby-comment cmt"># queue.each</span>
+395:               
+396:             } <span class="ruby-comment cmt"># what_to_index.each</span>
+397: 
+398:             <span class="ruby-comment cmt"># process the accumulated bulk-add list in fast mode.</span>
+399:             <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-constant">SLOW_ADD</span>
+400:               <span class="ruby-identifier">unique_terms</span> = <span class="ruby-identifier">terms</span>.<span class="ruby-identifier">uniq</span>
+401:               <span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;   Fast-adding  #{terms.size} terms (#{unique_terms.size} unique.)&quot;</span>)
+402:               <span class="ruby-comment cmt">#debug(&quot;items: #{terms.inspect}&quot;)</span>
+403: 
+404:               <span class="ruby-comment cmt"># 1) Add any terms that do not already exist in the database. </span>
+405:               <span class="ruby-comment cmt">#    We do this by COPYing them into a temporary table, then INSERTing</span>
+406:               <span class="ruby-comment cmt">#    into the real table where the record does not exist there.</span>
+407:               
+408:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">execute</span> <span class="ruby-value str">&quot;             CREATE TEMPORARY TABLE soda_terms_loader( LIKE \#{self.class.soda_terms_class.table_name} INCLUDING DEFAULTS) ON COMMIT DROP;\n&quot;</span>
+409:               <span class="ruby-comment cmt"># execute() doesn't like COPYs... so we have to go raw.</span>
+410:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-value str">&quot;COPY soda_terms_loader (term) FROM STDIN;&quot;</span>)
+411:               <span class="ruby-identifier">unique_terms</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">term</span><span class="ruby-operator">|</span>
+412:                 <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">putline</span>(<span class="ruby-identifier">term</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;\n&quot;</span>)
+413:               }
+414:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">putline</span>(<span class="ruby-value str">&quot;\\.\n&quot;</span>)
+415:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">endcopy</span>
+416: 
+417:               <span class="ruby-comment cmt">#debug(&quot;  * found &quot; + self.class.soda_terms_class.connection.execute('SELECT COUNT(*) FROM soda_terms_loader').result.inspect +</span>
+418:               <span class="ruby-comment cmt">#      &quot; items in soda_terms_loader temporary table&quot;)</span>
+419:               
+420:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">execute</span> <span class="ruby-value str">&quot;             INSERT INTO \#{self.class.soda_terms_class.table_name} (SELECT * FROM soda_terms_loader as newdata\n                    WHERE NOT EXISTS ( SELECT * FROM \#{self.class.soda_terms_class.table_name} as real\n                                       WHERE real.term = newdata.term\n                                     )\n             );\n             DROP TABLE soda_terms_loader;\n&quot;</span>
+421:               <span class="ruby-comment cmt"># All terms are now in the database.</span>
+422:               <span class="ruby-comment cmt"># We need to get their IDs.</span>
+423:               <span class="ruby-comment cmt"># Select the term and ID into a hash as key/val.</span>
+424:               <span class="ruby-comment cmt">#debug(&quot; -- Getting term ids ...&quot;)</span>
+425:               <span class="ruby-identifier">term_object_cache</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_terms_class</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:all</span>, <span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-value str">&quot;term IN (?)&quot;</span>, <span class="ruby-identifier">unique_terms</span> ])
+426:               <span class="ruby-comment cmt">#debug(&quot;   Got #{term_object_cache.size} term objects back from database.&quot;)</span>
+427: 
+428:               <span class="ruby-identifier">terms_hash</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+429:               <span class="ruby-identifier">term_object_cache</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+430:                 <span class="ruby-identifier">terms_hash</span>[<span class="ruby-identifier">item</span>.<span class="ruby-identifier">term</span>] = <span class="ruby-identifier">item</span>.<span class="ruby-identifier">id</span>
+431:               }
+432: 
+433:               
+434:               <span class="ruby-comment cmt"># Now add the indices for each term with a COPY.</span>
+435:               <span class="ruby-comment cmt">#debug(&quot; Starting index COPY of #{terms.size} terms..&quot;)</span>
+436:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;COPY #{self.class.soda_indices_class.table_name} (term_id, position, user_id, indexee_id, subsource_url) FROM STDIN;&quot;</span>)
+437:               <span class="ruby-identifier">endStub</span> = <span class="ruby-node">&quot;#{self.user_id}\t#{self.id}\t#{subsource_url.nil? ? &quot;NULL&quot; : subsource_url}\n&quot;</span>
+438: 
+439:               <span class="ruby-identifier">terms</span>.<span class="ruby-identifier">each_with_index</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">currentTerm</span>, <span class="ruby-identifier">pos</span><span class="ruby-operator">|</span>
+440:                 <span class="ruby-comment cmt">#debug(pos) if pos % 1000 == 0</span>
+441:                 <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">putline</span>(<span class="ruby-identifier">terms_hash</span>[<span class="ruby-identifier">currentTerm</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span>
+442:                                                                                 <span class="ruby-node">&quot;\t#{pos.to_s}\t&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">endStub</span>)
+443:               }
+444:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">putline</span>(<span class="ruby-value str">&quot;\\.\n&quot;</span>)
+445:               <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_indices_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">raw_connection</span>.<span class="ruby-identifier">endcopy</span>
+446:               <span class="ruby-identifier">debug</span>(<span class="ruby-value str">&quot; * Done fast-adding indices. Found &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">indexes_count</span>().<span class="ruby-identifier">inspect</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; terms for self.id&quot;</span>)
+447:             <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># if not SLOW_ADD</span>
+448: 
+449: 
+450: 
+451:           } <span class="ruby-comment cmt"># transaction</span>
+452: 
+453:           <span class="ruby-comment cmt">## Clean up the database and delete any unreferenced terms, if we have deleted any indices.</span>
+454:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">purge_unused_terms</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">clear_old</span>
+455: 
+456:           <span class="ruby-identifier">end_time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">to_f</span>
+457:           <span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">if</span> <span class="ruby-identifier">end_time</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">start_time</span>
+458:                  <span class="ruby-node">&quot;#{clear_old ? 're' : ''}indexed #{position} terms in 0 seconds - infinity terms per second.&quot;</span>
+459:                <span class="ruby-keyword kw">else</span>
+460:                  <span class="ruby-node">&quot;#{clear_old ? 're' : ''}indexed #{position} terms in #{end_time - start_time} seconds - #{position / (end_time - start_time)} terms per second.&quot;</span>
+461:                <span class="ruby-keyword kw">end</span>)
+462: 
+463:           
+464:           <span class="ruby-comment cmt"># return how many words we added</span>
+465:           <span class="ruby-identifier">position</span>
+466:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+          <a href="#M000016" class="method-signature">
+          <span class="method-name">indexes_count</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the number of terms that have been added to the index for this
+object.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000016-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 480</span>
+480:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">indexes_count</span>
+481:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">soda_terms_class</span>.<span class="ruby-identifier">connection</span>.<span class="ruby-identifier">execute</span>(<span class="ruby-node">&quot;select count(*) from #{self.class.soda_indices_class.table_name} &quot;</span> <span class="ruby-operator">+</span>
+482:                                                          <span class="ruby-node">&quot;WHERE indexee_id = '#{self.id}'&quot;</span>).<span class="ruby-identifier">result</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_i</span>
+483:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Protected Instance methods</h3>
+
+      <div id="method-M000020" class="method-detail">
+        <a name="M000020"></a>
+
+        <div class="method-heading">
+          <a href="#M000020" class="method-signature">
+          <span class="method-name">debug</span><span class="method-args">(msg)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000020-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000020-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 498</span>
+498:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">debug</span>(<span class="ruby-identifier">msg</span>)
+499:         <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;* acts_as_soda_search (for #{self.class.name}): #{msg}&quot;</span>)
+500:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000021" class="method-detail">
+        <a name="M000021"></a>
+
+        <div class="method-heading">
+          <a href="#M000021" class="method-signature">
+          <span class="method-name">error</span><span class="method-args">(msg)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000021-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000021-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 501</span>
+501:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">error</span>(<span class="ruby-identifier">msg</span>)
+502:         <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-node">&quot;* ERROR: acts_as_soda_search (for #{self.class.name}): #{msg}&quot;</span>)
+503:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
+
+        <div class="method-heading">
+          <a href="#M000018" class="method-signature">
+          <span class="method-name">info</span><span class="method-args">(msg)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000018-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 492</span>
+492:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">info</span>(<span class="ruby-identifier">msg</span>)
+493:         <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-node">&quot;* acts_as_soda_search (for #{self.class.name}): #{msg}&quot;</span>)
+494:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000019" class="method-detail">
+        <a name="M000019"></a>
+
+        <div class="method-heading">
+          <a href="#M000019" class="method-signature">
+          <span class="method-name">warn</span><span class="method-args">(msg)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000019-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_soda_search.rb, line 495</span>
+495:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">warn</span>(<span class="ruby-identifier">msg</span>)
+496:         <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-node">&quot;* WARNING: acts_as_soda_search (for #{self.class.name}): #{msg}&quot;</span>)
+497:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

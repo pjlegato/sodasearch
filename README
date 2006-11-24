@@ -1,0 +1,193 @@
+SodaSearch full text indexing module for Ruby on Rails
+Copyright (C) 2006 Networked Knowledge Systems, Inc.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+== Revision History
+  - original 7/21/06 by Paul Legato (plegato@nks.net)
+  - Revised 7/22/06 by Paul Legato (plegato@nks.net)
+
+== Overview
+
+
+Soda Search is a medium-performance full-text indexing system. It is
+loosely based on the same principles as Xapian (http://www.xapian.org/).
+
+The system is relatively simple. It consists of two database tables
+per class being indexed, plus some ActiveRecord extensions shared by
+all classes that use the Indexer.
+
+The database tables are deliberately NOT normalized completely, to
+cut back on the computational overhead required to do searches and
+updates.
+
+This system is quite useable as it is, but the index format it
+provides is also the foundation for a much more robust searching
+system. We will eventually implement phrase matching, term weighting, Boolean term
+combination, etc. This can all be accomplished with the current index
+format; all that needs to be done is modify the searching code.
+
+==Setup
+
+Install this directory into your vendor/plugins/ directory.
+
+The required tables per indexed class are <class>_terms and <class>_indices, where
+<class> is the name of your model class.
+
+=== <class>_terms structure:
+
+    id primary key,
+    term text not null uniq
+
+    Index on term.
+
+
+=== <class>_indices structure:
+
+    id primary key,
+    term_id int not null FK references <class>_terms(id)
+    position int not null,
+    owner uuid not null FK references users(id), -- not normal
+    public boolean not null default false, -- not normal
+    indexee_id uuid not null FK references <class>(id)
+
+    Index on term_id.
+
+You are responsible for creating these tables, and for creating
+ActiveRecord classes for them. When you call acts_as_soda_search in
+whatever you are indexing, pass these two classes to it.
+
+You must implement two ActiveRecord model classes (one for each newly
+created table), and pass the Class objects to acts_as_soda_search:
+indices_class and terms_class.
+
+We hope to add a migration generator for these items in the future. If
+you would write one and contribute it back to the project, we'd
+appreciate it!
+
+
+== Usage
+Read this, and read the comments in acts_as_soda_search.rb. We hope to
+have better docs here soon. Please feel free to contribute patches
+with improvements to this documentation.
+
+== Consequences of Not Being Normal
+
+The two not-normal fields (owner and public) would normally be
+retrieved via a join on <class>_id to the original <class> table, but
+we don't do this so that we can avoid touching the <class> table
+altogether when we are only interested in searching for things owned
+by a certain user, or for things marked public (to implement public
+vs. private searches.) The names of the index
+tables also encode important data (i.e. which class is being indexed),
+for speed.
+
+The flipside is that it is possible for the data here to become
+outdated/corrupted if the owner of a <class> instance changes, or if
+the public status of an item changes.
+
+Both of these situations can be taken care of by adding triggers on
+the referenced table that propagates such updates to the
+<class>_indices table. A less painful method, albeit one that does not
+ensure integrity at the database level, is to handle this with
+ActiveRecord model hooks; such a setup is "wrong" insofar as a
+database schema should not allow for the possibility that it even can
+become corrupted - it should be impossible to put any situation into
+the database that would be corrupt by definition. Database level
+triggers do that, AR hooks don't.
+
+ActiveRecord::Base is extended with an index() method. This returns an
+Array of terms present in the object in order. How to determine what
+terms to include is up to each object.
+
+The ordering (held inherently in the Array at the Ruby level, and
+held in the "position" column at the database level) is used so
+that when users do searches, terms close together can be given more
+weight than terms farther apart. This method will allow quoted exact
+phrase searches, once those are implemented in the retrieval code.
+
+ActiveRecord::Base also gets two class methods, reindex() and
+search(). 
+
+
+
+== Blunt Reindexing
+
+=== Of a whole class:
+To reindex a given class, call <class name>.reindex(<type>),
+e.g. "Comments.reindex(:all)".
+
+Currently valid types are :all and :unindexed.
+
+:all erases all existing indices and reindexes every record. This can
+take a long time if there are a lot of records to be reindexed, and
+it will put significant load on the database while this is happening.
+
+:unindexed just indexes records that have no index data stored in the
+database. Note that any partially indexed records will NOT be completed by
+running :unindexed, since the test is a simple Boolean check.
+
+
+=== Of one instance of a class:
+
+Instances are provided with an "index()" instance method.
+
+The first argument, what_to_index, is an array. It can be either an
+array of strings or of procs. In the string version, the strings are
+the text to be indexed.
+
+In the proc version, each proc is called in sequence. It may return
+either a String or another Proc (which should return a
+String). Currently, only 2 levels of proc nesting are supported --
+someday, we'll rewrite it to be infinitely recursive (although Ruby as of
+now has tail recursion stack issues.)
+
+The second argument, clear_old, is an optional Boolean that defaults
+to false. If set to true, it will erase all entries for the instance
+before indexing what_to_index and inserting it. Use this only when the
+app is running in single-user mode (i.e. during a maintenance window,
+from the console.) If you run it while in multi-user mode, there is a small chance
+that there is another thread somewhere which will start a
+transaction to insert data into the index after/during the transaction
+that clears the old data. This could potentially corrupt the
+database through a race condition.
+
+For example, a website user adds a new comment to a thread in a
+forum. (Assume that for some reason the thread is indexed as a whole.)
+The app code auto-indexes the new message and adds it to the database
+in Transaction A. A half-second before that, you start up an index()
+on the thread with :clear_old == true, initiating Transaction B. B is
+given the contents of the message as its first argument, which was
+created before A committed.  It deletes the old data from the index
+and writes new index data for the messages it knows about, which do
+not include the page added in A. The new index will thus not include
+any data from A.
+
+There may be other scenarios. We can abate this through locking at
+either the database or app level. Serialized transactions would work
+too, but the app must know to retry them. This is still a TODO. For
+now, only do :clear_old == true in a maintenance window, or risk doom.
+
+See also http://www.postgresql.org/docs/8.1/static/mvcc.html for more
+information.
+
+
+== Advanced Reindexing
+
+Suppose that part of a large indexed object changes; for example, one
+message in a thread which is indexed as a whole is changed. We have
+added a subsource_url text field to the index, so that individual
+chunks of index data can be referenced independently of one another according
+to whatever scheme makes sense in your case.

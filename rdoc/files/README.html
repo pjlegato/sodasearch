@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Thu Nov 23 18:20:05 PST 2006</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+SodaSearch full text indexing module for Ruby on Rails Copyright (C) 2006
+Networked Knowledge Systems, Inc.
+</p>
+<p>
+This library is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2.1 of the License, or (at
+your option) any later version.
+</p>
+<p>
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+for more details.
+</p>
+<p>
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+</p>
+<h2>Revision History</h2>
+<pre>
+  - original 7/21/06 by Paul Legato (plegato@nks.net)
+  - Revised 7/22/06 by Paul Legato (plegato@nks.net)
+</pre>
+<h2>Overview</h2>
+<p>
+Soda Search is a medium-performance full-text indexing system. It is
+loosely based on the same principles as Xapian (<a
+href="http://www.xapian.org">www.xapian.org</a>/).
+</p>
+<p>
+The system is relatively simple. It consists of two database tables per
+class being indexed, plus some ActiveRecord extensions shared by all
+classes that use the Indexer.
+</p>
+<p>
+The database tables are deliberately NOT normalized completely, to cut back
+on the computational overhead required to do searches and updates.
+</p>
+<p>
+This system is quite useable as it is, but the index format it provides is
+also the foundation for a much more robust searching system. We will
+eventually implement phrase matching, term weighting, Boolean term
+combination, etc. This can all be accomplished with the current index
+format; all that needs to be done is modify the searching code.
+</p>
+<h2>Setup</h2>
+<p>
+Install this directory into your vendor/plugins/ directory.
+</p>
+<p>
+The required tables per indexed class are &lt;class&gt;_terms and
+&lt;class&gt;_indices, where &lt;class&gt; is the name of your model class.
+</p>
+<h3>&lt;class&gt;_terms structure:</h3>
+<pre>
+    id primary key,
+    term text not null uniq
+
+    Index on term.
+</pre>
+<h3>&lt;class&gt;_indices structure:</h3>
+<pre>
+    id primary key,
+    term_id int not null FK references &lt;class&gt;_terms(id)
+    position int not null,
+    owner uuid not null FK references users(id), -- not normal
+    public boolean not null default false, -- not normal
+    indexee_id uuid not null FK references &lt;class&gt;(id)
+
+    Index on term_id.
+</pre>
+<p>
+You are responsible for creating these tables, and for creating
+ActiveRecord classes for them. When you call acts_as_soda_search in
+whatever you are indexing, pass these two classes to it.
+</p>
+<p>
+You must implement two ActiveRecord model classes (one for each newly
+created table), and pass the Class objects to acts_as_soda_search:
+indices_class and terms_class.
+</p>
+<p>
+We hope to add a migration generator for these items in the future. If you
+would write one and contribute it back to the project, we&#8217;d
+appreciate it!
+</p>
+<h2>Usage</h2>
+<p>
+Read this, and read the comments in acts_as_soda_search.rb. We hope to have
+better docs here soon. Please feel free to contribute patches with
+improvements to this documentation.
+</p>
+<h2>Consequences of Not Being Normal</h2>
+<p>
+The two not-normal fields (owner and public) would normally be retrieved
+via a join on &lt;class&gt;_id to the original &lt;class&gt; table, but we
+don&#8217;t do this so that we can avoid touching the &lt;class&gt; table
+altogether when we are only interested in searching for things owned by a
+certain user, or for things marked public (to implement public vs. private
+searches.) The names of the index tables also encode important data (i.e.
+which class is being indexed), for speed.
+</p>
+<p>
+The flipside is that it is possible for the data here to become
+outdated/corrupted if the owner of a &lt;class&gt; instance changes, or if
+the public status of an item changes.
+</p>
+<p>
+Both of these situations can be taken care of by adding triggers on the
+referenced table that propagates such updates to the &lt;class&gt;_indices
+table. A less painful method, albeit one that does not ensure integrity at
+the database level, is to handle this with ActiveRecord model hooks; such a
+setup is &quot;wrong&quot; insofar as a database schema should not allow
+for the possibility that it even can become corrupted - it should be
+impossible to put any situation into the database that would be corrupt by
+definition. Database level triggers do that, AR hooks don&#8217;t.
+</p>
+<p>
+ActiveRecord::Base is extended with an index() method. This returns an
+Array of terms present in the object in order. How to determine what terms
+to include is up to each object.
+</p>
+<p>
+The ordering (held inherently in the Array at the Ruby level, and held in
+the &quot;position&quot; column at the database level) is used so that when
+users do searches, terms close together can be given more weight than terms
+farther apart. This method will allow quoted exact phrase searches, once
+those are implemented in the retrieval code.
+</p>
+<p>
+ActiveRecord::Base also gets two class methods, reindex() and search().
+</p>
+<h2>Blunt Reindexing</h2>
+<h3>Of a whole class:</h3>
+<p>
+To reindex a given class, call &lt;class name&gt;.reindex(&lt;type&gt;),
+e.g. &quot;Comments.reindex(:all)&quot;.
+</p>
+<p>
+Currently valid types are :all and :unindexed.
+</p>
+<p>
+:all erases all existing indices and reindexes every record. This can take
+a long time if there are a lot of records to be reindexed, and it will put
+significant load on the database while this is happening.
+</p>
+<p>
+:unindexed just indexes records that have no index data stored in the
+database. Note that any partially indexed records will NOT be completed by
+running :unindexed, since the test is a simple Boolean check.
+</p>
+<h3>Of one instance of a class:</h3>
+<p>
+Instances are provided with an &quot;index()&quot; instance method.
+</p>
+<p>
+The first argument, what_to_index, is an array. It can be either an array
+of strings or of procs. In the string version, the strings are the text to
+be indexed.
+</p>
+<p>
+In the proc version, each proc is called in sequence. It may return either
+a <a href="../classes/String.html">String</a> or another Proc (which should
+return a <a href="../classes/String.html">String</a>). Currently, only 2
+levels of proc nesting are supported &#8212; someday, we&#8217;ll rewrite
+it to be infinitely recursive (although Ruby as of now has tail recursion
+stack issues.)
+</p>
+<p>
+The second argument, clear_old, is an optional Boolean that defaults to
+false. If set to true, it will erase all entries for the instance before
+indexing what_to_index and inserting it. Use this only when the app is
+running in single-user mode (i.e. during a maintenance window, from the
+console.) If you run it while in multi-user mode, there is a small chance
+that there is another thread somewhere which will start a transaction to
+insert data into the index after/during the transaction that clears the old
+data. This could potentially corrupt the database through a race condition.
+</p>
+<p>
+For example, a website user adds a new comment to a thread in a forum.
+(Assume that for some reason the thread is indexed as a whole.) The app
+code auto-indexes the new message and adds it to the database in
+Transaction A. A half-second before that, you start up an index() on the
+thread with :clear_old == true, initiating Transaction B. B is given the
+contents of the message as its first argument, which was created before A
+committed. It deletes the old data from the index and writes new index data
+for the messages it knows about, which do not include the page added in A.
+The new index will thus not include any data from A.
+</p>
+<p>
+There may be other scenarios. We can abate this through locking at either
+the database or app level. Serialized transactions would work too, but the
+app must know to retry them. This is still a TODO. For now, only do
+:clear_old == true in a maintenance window, or risk doom.
+</p>
+<p>
+See also <a
+href="http://www.postgresql.org/docs/8.1/static/mvcc.html">www.postgresql.org/docs/8.1/static/mvcc.html</a>
+for more information.
+</p>
+<h2>Advanced Reindexing</h2>
+<p>
+Suppose that part of a large indexed object changes; for example, one
+message in a thread which is indexed as a whole is changed. We have added a
+subsource_url text field to the index, so that individual chunks of index
+data can be referenced independently of one another according to whatever
+scheme makes sense in your case.
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

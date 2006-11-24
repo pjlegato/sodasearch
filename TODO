@@ -1,0 +1,7 @@
+- Write usage examples
+- Expand documentation
+- Write unit tests
+- Write generators to make migrations and index table models
+  automatically
+- Enhance search engine to support quoted search, term weighting,
+  Boolean search term combination
